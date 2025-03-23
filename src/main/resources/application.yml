@@ -1,0 +1,22 @@
+management:
+  endpoint:
+    health:
+      access: read_only
+      show-details: always
+  endpoints:
+    access:
+      default: read_only
+    web:
+      base-path: /
+  health:
+    db:
+      enabled: false
+    diskspace:
+      enabled: true
+spring:
+  application:
+    name: Licensing Serivce
+  profiles:
+    active: dev
+  config:
+    import: configserver:http://localhost:8071
