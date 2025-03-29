@@ -1,13 +1,14 @@
 management:
   endpoint:
+    env:
+      show-values: always
     health:
       access: read_only
       show-details: always
   endpoints:
-    access:
-      default: read_only
     web:
-      base-path: /
+      exposure:
+        include: env,configprops,refresh
   health:
     db:
       enabled: false
@@ -15,7 +16,14 @@ management:
       enabled: true
 spring:
   application:
-    name: Licensing Serivce
+    name: licensing-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ostock_dev
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    jpa:
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
   profiles:
     active: dev
   config:
