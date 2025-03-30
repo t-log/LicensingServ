@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
@@ -39,11 +40,11 @@ public class LicenseService {
     OrganisationDiscoveryClient organisationDiscoveryClient;
 
     public License getLicense(String licenseId, String organisationId) {
-        License license = licenseRepository.findByOrganisationIdAndLicenseId(organisationId, licenseId);
+        List<License> license = licenseRepository.findByOrganisationIdAndLicenseId(organisationId, licenseId);
         if (null == license) {
             throw new IllegalArgumentException(String.format(messages.getMessage("license.search.error.message", null, null), licenseId, organisationId));
         }
-        return license.withComment(config.getProperty());
+        return license.get(0).withComment(config.getProperty());
     }
 
     public License createLicense(License license) {
@@ -67,9 +68,10 @@ public class LicenseService {
         responseMessage = String.format(messages.getMessage("license.delete.message", null, null), licenseId);
         return responseMessage;
     }
-    public License getLicense(String licenseId, String organisationId, String
+    public License getLicense(String organisationId, String licenseId, String
             clientType){
-        License license = licenseRepository.findByOrganisationIdAndLicenseId(organisationId, licenseId);
+        List<License> licenseList = licenseRepository.findByOrganisationIdAndLicenseId(organisationId, licenseId);
+        License license = licenseList.get(0);
         if (null == license) {
             throw new IllegalArgumentException(String.format(
                     messages.getMessage("license.search.error.message", null, null),
@@ -86,26 +88,27 @@ public class LicenseService {
         return license.withComment(config.getProperty());
     }
     private Organisation retrieveOrganisationInfo(String organisationId, String clientType) {
-        Organisation organization = null;
+        Organisation organisation = null;
 
         switch (clientType) {
             case "feign":
 //                System.out.println("I am using the feign client");
-//                organization = organisationFeignClient.getOrganisation(organisationId);
+//                organisation = organisationFeignClient.getOrganisation(organisationId);
                 break;
             case "rest":
                 System.out.println("I am using the rest client");
-                organization = organisationRestClient.getOrganisation(organisationId);
+                organisation = organisationRestClient.getOrganisation(organisationId);
                 break;
             case "discovery":
                 System.out.println("I am using the discovery client");
-                organization = organisationDiscoveryClient.getOrganisation(organisationId);
+                organisation = organisationDiscoveryClient.getOrganisation(organisationId);
                 break;
             default:
-                organization = organisationRestClient.getOrganisation(organisationId);
+                organisation = organisationRestClient.getOrganisation(organisationId);
                 break;
         }
 
-        return organization;
+        return organisation;
     }
+
 }

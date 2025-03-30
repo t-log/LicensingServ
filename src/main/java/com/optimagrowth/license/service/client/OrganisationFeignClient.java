@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.optimagrowth.license.model.Organisation;
 
-//@FeignClient("organization-service")
+//@FeignClient("organisation-service")
 @Component
 public interface OrganisationFeignClient {
     @RequestMapping(

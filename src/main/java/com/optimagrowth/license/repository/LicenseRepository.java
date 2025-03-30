@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface LicenseRepository extends CrudRepository<License,String> {
     public List<License> findByOrganisationId(String organisationId);
-    @Query(value = "SELECT l FROM License l WHERE l.organisationId =:organisationId AND l.licenseId =:licenseId")
-    public License findByOrganisationIdAndLicenseId(@Param("organisationId")String organisationId,@Param("licenseId")String licenseId);
+
+    public List<License> findByOrganisationIdAndLicenseId(String organisationId,String licenseId);
 }
