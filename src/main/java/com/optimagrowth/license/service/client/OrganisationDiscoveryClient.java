@@ -17,13 +17,13 @@ public class OrganisationDiscoveryClient {
     @Autowired
     private DiscoveryClient discoveryClient;
 
-    public Organisation getOrganization(String organisationId) {
+    public Organisation getOrganisation(String organisationId) {
         RestTemplate restTemplate = new RestTemplate();
         List<ServiceInstance> instances =
-                discoveryClient.getInstances("organization-service");
+                discoveryClient.getInstances("organisation-service");
         if (instances.size() == 0) return null;
         String serviceUri = String.format
-                ("%s/v1/organization/%s", instances.get(0)
+                ("%s/v1/organisation/%s", instances.get(0)
                                 .getUri().toString(),
                         organisationId);
         ResponseEntity<Organisation> restExchange =

@@ -2,7 +2,11 @@ package com.optimagrowth.license.service;
 
 import com.optimagrowth.license.config.ServiceConfig;
 import com.optimagrowth.license.model.License;
+import com.optimagrowth.license.model.Organisation;
 import com.optimagrowth.license.repository.LicenseRepository;
+import com.optimagrowth.license.service.client.OrganisationDiscoveryClient;
+import com.optimagrowth.license.service.client.OrganisationFeignClient;
+import com.optimagrowth.license.service.client.OrganisationRestTemplateClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -21,8 +25,18 @@ public class LicenseService {
     @Autowired
     LicenseRepository licenseRepository;
 
+
     @Autowired
     ServiceConfig config;
+
+//    @Autowired
+//    OrganisationFeignClient organisationFeignClient;
+
+    @Autowired
+    OrganisationRestTemplateClient organisationRestClient;
+
+    @Autowired
+    OrganisationDiscoveryClient organisationDiscoveryClient;
 
     public License getLicense(String licenseId, String organisationId) {
         License license = licenseRepository.findByOrganisationIdAndLicenseId(organisationId, licenseId);
@@ -55,8 +69,7 @@ public class LicenseService {
     }
     public License getLicense(String licenseId, String organisationId, String
             clientType){
-        License license = licenseRepository.findByOrganisationIdAndLicenseId
-                (organisationId, licenseId);
+        License license = licenseRepository.findByOrganisationIdAndLicenseId(organisationId, licenseId);
         if (null == license) {
             throw new IllegalArgumentException(String.format(
                     messages.getMessage("license.search.error.message", null, null),
@@ -70,6 +83,29 @@ public class LicenseService {
             license.setContactEmail(organisation.getContactEmail());
             license.setContactPhone(organisation.getContactPhone());
         }
-        return license.withComment(config.getExampleProperty());
+        return license.withComment(config.getProperty());
+    }
+    private Organisation retrieveOrganisationInfo(String organisationId, String clientType) {
+        Organisation organization = null;
+
+        switch (clientType) {
+            case "feign":
+//                System.out.println("I am using the feign client");
+//                organization = organisationFeignClient.getOrganisation(organisationId);
+                break;
+            case "rest":
+                System.out.println("I am using the rest client");
+                organization = organisationRestClient.getOrganisation(organisationId);
+                break;
+            case "discovery":
+                System.out.println("I am using the discovery client");
+                organization = organisationDiscoveryClient.getOrganisation(organisationId);
+                break;
+            default:
+                organization = organisationRestClient.getOrganisation(organisationId);
+                break;
+        }
+
+        return organization;
     }
 }

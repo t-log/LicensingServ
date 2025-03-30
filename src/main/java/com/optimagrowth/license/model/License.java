@@ -9,17 +9,18 @@ import org.springframework.hateoas.RepresentationModel;
 
 @Getter @Setter @ToString
 @Entity
-@Table(name = "licenses")
+@Table(name = "licenses",schema = "public")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class License extends RepresentationModel<License> {
     @Id
     @Column(name = "license_id", nullable = false)
     private String licenseId;
 
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "organization_id", nullable = false)
-    private String organizationId;
+    @Column(name = "organisation_id", nullable = false)
+    private String organisationId;
 
     @Column(name = "product_name", nullable = false)
     private String productName;
@@ -31,7 +32,7 @@ public class License extends RepresentationModel<License> {
     private String comment;
 
     @Transient
-    private String organizationName;
+    private String organisationName;
 
     @Transient
     private String contactName;

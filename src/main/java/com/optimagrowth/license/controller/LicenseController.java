@@ -61,10 +61,10 @@ public class LicenseController {
 
     @GetMapping("/{licenseId}/{clientType}")
     public License getLicensesWithClient(
-            @PathVariable("organizationId") String organizationId,
+            @PathVariable("organisationId") String organisationId,
             @PathVariable("licenseId") String licenseId,
             @PathVariable("clientType") String clientType) {
-        return licenseService.getLicense(organizationId,
+        return licenseService.getLicense(organisationId,
                 licenseId, clientType);
     }
 
